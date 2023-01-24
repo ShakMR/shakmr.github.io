@@ -4,6 +4,8 @@ In this article I'll explain some concepts regarding building RESTful APIs and u
 NodeJS (with TypeScript) as example. I'll focus mainly in the API layer and not go too
 deep into services/domain and repositories/dal.
 
+The code used in the examples is in [this repository in github](https://github.com/ShakMR/restful-api).
+
 ## What is a REST API
 
 There are a lot of kinds of API. Some of them are newer (GraphQL), some of them are
@@ -822,5 +824,7 @@ Maybe we could fully implement the MediaController and the User Module?
 ### 10. Sources
 
 I learnt about API mainly while working, from more experiences colleagues, but I came to know about thinks like HATEOAS
-first when learning about the Spring framework and later when reading "Build APIs you won't hate" by Phil Sturgeon. The 
+first when learning about the Spring framework and later when reading ["Build APIs you won't hate" by Phil Sturgeon](https://www.goodreads.com/book/show/18981361-build-apis-you-won-t-hate). The 
 latter is the main inspiration for most of the concepts I mention here. And Wikipedia, of course.
+
+Once again, the [link](https://github.com/ShakMR/restful-api) to the repo.
