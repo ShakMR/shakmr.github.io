@@ -799,8 +799,8 @@ link provided to query it without having to build anything or even think about i
 
 ### 8. Conclusion
 
-With this we have build a small RESTful API (including hypermedia) using Typescript and NestJS. There's still a lot to 
-add to this API for it to work in a production like environment for this app tho (pagination, authentication, documentation)
+We have build a small RESTful API (including hypermedia) using Typescript and NestJS. There's still a lot to 
+add to this API for it to work in a production like environment for this app tho (pagination, authentication, versioning, documentation)
 
 Testing is covered in the repository, although we didn't do it explicitly in this piece of text.
 
@@ -808,6 +808,19 @@ Hateoas might not be interesting for some people, we might not use it in product
 now it exists. There are other API technologies out there that tackle things differently that we might want to use instead
 like GraphQL or GRPC. We will evaluate the options in each use case and chose accordingly.
 
+Key takeaways:
+- plan your API
+- be consistent through the API
+- built it for machines and humans
+- namespaces are cool
+- use hypermedia (or not)
+
 ### 9. Next step
 
 Maybe we could fully implement the MediaController and the User Module?
+
+### 10. Sources
+
+I learnt about API mainly while working, from more experiences colleagues, but I came to know about thinks like HATEOAS
+first when learning about the Spring framework and later when reading "Build APIs you won't hate" by Phil Sturgeon. The 
+latter is the main inspiration for most of the concepts I mention here. And Wikipedia, of course.
