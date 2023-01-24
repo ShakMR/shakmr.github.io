@@ -114,17 +114,9 @@ Post:
 - List (title)
 - Media
 
-User: 
-- Create
-- Read
-- Update
-- Delete 
-
 Media: 
 - Create
 - Delete
-
-For the sake of simplicity we will leave the User entity outside this article.
 
 #### Routing
 
@@ -138,10 +130,6 @@ Lets defined the routes.
 | Delete | DELETE /posts/:uuid   | PostController  |
 | List   | GET /posts            | PostController  |
 | Media  | GET /post/:uuid/media | MediaController |
-| Create | POST /users           | UserController  |
-| Get    | GET /users/:uuid      | UserController  |
-| Put    | PUT /users/:uuid      | UserController  |
-| Delete | DELETE /users/:uuid   | UserController  |
 | Create | POST /media           | MediaController |
 | Delete | DELETE /media/:uuid   | MediaController |
 
@@ -164,7 +152,7 @@ In the endpoint list we chose names in plural for the entities. We could have ch
 and plurals for multiple instances (list, search, etc) but for the sake of consistency I prefer to use plural directly 
 for all of them.
 
-### Input/Output
+### 2. Input/Output
 
 All the endpoints defined above will receive input, send output or both (most of the time). 
 
@@ -292,3 +280,191 @@ If we use `"post"` in singular we will have some inconsistency in the endpoints 
 
 In this way we have consistency in all the endpoints, with the root of the response being generic and we are able to add 
 metadata as needed, as well as extra information (other entities) when needed.
+
+### 3. Errors
+
+We want our API to be understood by machines and also by humans. When defining errors we need to have this in mind. Machines 
+should be able to understand the API errors to be able to know **when** an something happened and react appropriately 
+(for example HTTP 500 error). Humans need to be able to know what happen too. Think about the details on a form validation (HTTP 400).
+
+Some examples:
+
+```json
+  {
+    "errors": [
+      {
+        "code": "ERR-1234",
+        "title": "Validation Error",
+        "detail": "Username is required",
+        "source": { "pointer": "/data/attributes/username" },
+        "status": "400"
+      }
+    ]
+  }
+```
+
+Following the same approach as with successful request. We return the errors namespaced in an array. 
+We could also add more information in the payload as we require. JSON-API standard defines a `meta` attribute for this, but
+we won't use it here.
+
+More info on error response in JSON-API [here](https://jsonapi.org/format/#errors) and [some examples here](https://jsonapi.org/examples/#error-objects)
+
+#### HTTP Status code
+
+There are some APIs out there which return HTTP status also on error. I've worked with some of those and, personally, I
+find it useless and confusing. HTTP defines error codes for any kind of response we might want and using them just makes sense.
+
+In this API we will explicitly use:
+- 200 for success request
+- 201 for success creation of an entity
+- 400 when the input provided by the client is invalid.
+- 404 when the resource doesn't exist (invalid UUID).
+
+There are some error codes which are handled by the framework itself, for example 405 when a method is not defined for a route.
+
+### 4. Show me the code
+
+Up until now we have defined how to talk with our API, what the API provides and what can we expect from it.
+
+Let's see this in a code example. For this API we are using Typescript and NestJS. We will focus on the controllers mainly
+as we are interested in the API layer for now.
+
+#### LIST
+```typescript
+@Controller('posts')
+export class PostController {
+  constructor(@Inject('PostService') private service: PostServiceInterface) {
+  }
+
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get()
+  async getAll(@Query('search') search: string): Promise<ApiResponse<PostDTO[]>> {
+    return {
+      data: (await this.service.getAll(search)).map((p) => new PostDTO(p)),
+      metadata: {},
+    };
+  }
+}
+```
+
+In the code above we implement the LIST action on the Post entity. We take the `search` query parameter as input if 
+is there (`undefined` otherwise) and we call `getAll` from the service passing the data. Then the data is sent as response
+using the namespacing and with a small transformation.
+
+We are iterating over all the posts and creating a new `PostDTO`.
+
+```typescript
+import { Exclude } from "class-transformer";
+
+export class PostDTO {
+  @Exclude()
+  id: number;
+
+  uuid: string;
+  title: string;
+  description: string;
+
+  constructor(partial: Partial<PostDTO>) {
+    Object.assign(this, partial);
+  }
+}
+```
+In this piece of code we are simply removing the id of the Post as we don't want to expose it to the clients. However for
+this to work we need to tell NestJS we want to intercept the output and transform it. This is done via the `@UseInterceptors(ClassSerializerInterceptor)`
+decorator.
+
+Interceptors in NestJS sit between the client and the controller handler and transform the information flowing in both 
+directions if necessary. In this case we use the `class-transformer` package to exclude the id (more [here](https://docs.nestjs.com/techniques/serialization)).
+
+We define this PostDTO object separated from the model which is used internally. So the service will return a Post instead of a PostDTO.
+
+```
+GET http://localhost:3000/posts/?search=Travel
+```
+
+```json
+{
+  "data": [
+    {
+      "uuid": "00000000-0000-0000-0000-000000000001",
+      "title": "Travel through Africa",
+      "description": "This is my post about my trip to Africa",
+    },
+    {
+      "uuid": "00000000-0000-0000-0000-000000000002",
+      "title": "Travel through South America",
+      "description": "This are my pics from my trip to South America",
+    },
+    {
+      "uuid": "00000000-0000-0000-0000-000000000003",
+      "title": "Travel to the Moon",
+      "description": "This are my pics from my space trip",
+    }
+  ],
+  "metadata": {}
+}
+```
+
+If case the `search` parameter doesn't match with at least one element we will just return an empty array. There's no need
+to handle explicit errors here.
+
+### READ
+
+The read endpoint is a bit more interesting as we need to handle the error case when the UUID doesn't match any Post.
+
+```typescript
+@Controller('posts')
+export class PostController {
+  constructor(@Inject('PostService') private service: PostServiceInterface) {}
+
+  // ...
+
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get(':uuid')
+  async getOne(@Param('uuid') uuid: string): Promise<ApiResponse<PostDTO>> {
+    const post = await this.service.getByUuid(uuid);
+
+    if (!post) {
+      throw new HttpException(
+        {
+          code: 'ERR-1',
+          status: `${HttpStatus.NOT_FOUND}`,
+          title: 'Not found',
+          details: "The Post requested couldn't be found",
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return {
+      data: new PostDTO(post),
+      metadata: {},
+    };
+  }
+}
+```
+
+We take the `uuid` from the path params, and we send it to the service to get that single item back.
+
+In this case there the option the `uuid` doesn't exist so we through an error using a NestJS built in exception.
+But by default this exception doesn't give us the format we want in the output. NestJS provides exception filters for 
+that matter. 
+
+```typescript
+@Catch(HttpException)
+export class HttpExceptionFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const status = exception.getStatus();
+
+    response.status(status).json({
+      errors: exception.getResponse(),
+    });
+  }
+}
+```
+
+We add this in the bootstrapping of the application using `app.useGlobalFilters(new HttpExceptionFilter());` and in the 
+App module as a provider and it will transform all the errors, the ones fired by us explicitly and the ones generated by
+the framework .
