@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Creator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Librerías para generar el PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" xintegrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoVBL5gI9kLmbG4dGxdFTDSrPT0Ldg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" xintegrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        :root {
+            --border-color: black;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 2rem;
+            padding-bottom: 80px; /* Espacio para la barra de acciones */
+            background-color: #f0f2f5;
+        }
+
+        form {
+            display: none;
+        }
+
+        button {
+            background-color: #4f46e5;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid #d1d5db;
+        }
+        button:hover { background-color: #4338ca; }
+        button:disabled { background-color: #a5b4fc; cursor: not-allowed; }
+        
+        aside {
+            width: auto;
+            max-width: 8cm;
+        }
+
+        .external {
+            width: 8cm;
+            height: 12cm;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            border-radius: 9px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+            padding: 1rem 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+            background-color: white;
+        }
+
+        .name {
+            border: 1px solid var(--border-color);
+            padding: 0.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            transition: border-color 0.3s ease, background-color 0.2s;
+        }
+        
+        .name .level-span { /* Usar clase en lugar de ID para seleccionar */
+            background-color: black;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            transition: background-color 0.3s ease;
+        }
+
+        .effects {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 0.5rem;
+        }
+
+        .effects > *, .causa-div, .descripcion-div { /* Usar clases */
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .effects > * {
+            padding: 0.2rem;
+            text-align: center;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.25rem;
+            min-height: 32px;
+        }
+        
+        .causa-div, .descripcion-div {
+             padding: 0.5rem;
+             min-height: 40px;
+             word-break: break-word;
+             white-space: pre-wrap;
+        }
+        
+        .descripcion-div {
+            flex-grow: 1;
+            transition-property: background-color, font-size;
+            transition-duration: 0.2s, 0.3s;
+            transition-timing-function: ease, ease;
+        }
+        
+        .editable-field:hover {
+            cursor: pointer;
+            background-color: #f0f2f5;
+        }
+        
+        .inline-editor {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: transparent;
+            text-align: inherit;
+            font-size: inherit;
+            font-family: inherit;
+            color: inherit;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            resize: none;
+        }
+        .inline-editor:focus {
+            outline: none;
+            box-shadow: none;
+            background-color: transparent;
+        }
+        
+        .inline-dropdown {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            z-index: 1000;
+            padding: 0.25rem;
+        }
+        
+        .dropdown-item {
+            padding: 0.5rem;
+            cursor: pointer;
+            border-radius: 0.25rem;
+        }
+        .dropdown-item:hover {
+            background-color: #f0f2f5;
+        }
+        .dropdown-item.selected {
+            background-color: #e0e7ff;
+            font-weight: 500;
+        }
+        
+        .action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            padding: 1rem;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            z-index: 2000;
+        }
+        
+        .gallery-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 3000;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Alinea arriba para ver el scroll */
+            overflow-y: auto;
+            padding: 2rem;
+        }
+        
+        .gallery-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 8cm);
+            gap: 2rem;
+            justify-content: center;
+            width: 100%;
+            padding-top: 2rem; /* Espacio para el botón de cerrar */
+        }
+
+        .gallery-card-container {
+            position: relative;
+        }
+
+        .delete-card-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            border: 2px solid white;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            z-index: 10;
+        }
+        .delete-card-btn:hover {
+            background-color: #dc2626;
+        }
+        
+        .close-gallery-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: white;
+            color: black;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+    </style>
+</head>
+<body>
+    <form>
+        <!-- Formulario oculto, pero necesario para la lógica -->
+        <select name="cardType"><option value="dano">Daño</option><option value="curacion">Curación</option><option value="buf">Buf</option><option value="debuf">Debuf</option><option value="utilidad">Utilidad</option><option value="social">Social</option></select>
+        <input type="text" name="name" placeholder="Card Name"/>
+        <input type="number" name="level" value="1" min="0" />
+        <select name="tl"><option value="accion">accion</option><option value="adicional">adicional</option><option value="reaccion">reaccion</option></select>
+        <input type="number" name="alc" value="1" placeholder="Alcance" min="0"/>
+        <input type="text" name="duracion" value="1 turno" placeholder="e.g., 1 turno, 0 para instantaneo"/>
+        <select name="VSM" multiple><option value="V">V</option><option value="S">S</option><option value="M">M</option></select>
+        <select name="RC" multiple><option value="R">R</option><option value="C">C</option></select>
+        <input type="text" name="dados" placeholder="e.g., 1d6"/>
+        <input type="text" name="cause" placeholder="Causa"/>
+        <textarea name="descripcion" placeholder="Descripción"></textarea>
+        <select name="descripcionFontSize"><option value="small">Letra Pequeña</option><option value="medium" selected>Letra Normal</option><option value="large">Letra Grande</option></select>
+    </form>
+    <aside>
+        <div class="external">
+            <div class="card">
+                <div class="name">
+                    <span data-form-name="name" class="editable-field flex-grow name-span">Card Name</span>
+                    <span data-form-name="level" class="editable-field level-span">1</span>
+                </div>
+                <div class="effects">
+                    <div data-form-name="tl" class="editable-field tl-div">Accion</div>
+                    <div data-form-name="alc" class="editable-field alc-div">1m</div>
+                    <div data-form-name="duracion" class="editable-field duracion-div">1 turno</div>
+                    <div data-form-name="VSM" class="editable-field vsm-div"></div>
+                    <div data-form-name="RC" class="editable-field rc-div"></div>
+                    <div data-form-name="dados" class="editable-field dados-div"></div>
+                </div>
+                <div data-form-name="cause" class="editable-field causa-div"></div>
+                <div data-form-name="descripcion" class="editable-field descripcion-div"></div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="action-bar">
+        <button id="save-card">Guardar Carta Actual</button>
+        <button id="view-cards">Ver Cartas Guardadas (<span id="card-counter">0</span>)</button>
+        <button id="print-pdf" style="background-color: #16a34a;">Imprimir PDF</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            const mainCardElement = document.querySelector('.card');
+            const cardCounterSpan = document.getElementById('card-counter');
+
+            const typeColors = {
+                dano: '#ef4444', curacion: '#22c55e', buf: '#3b82f6',
+                debuf: '#a855f7', utilidad: '#f59e0b', social: '#ec4899'
+            };
+
+            const fontSizes = {
+                small: '0.75rem', medium: '0.9rem', large: '1.05rem'
+            };
+
+            function getCardState() {
+                const formData = new FormData(form);
+                const state = {};
+                for (const [key, value] of formData.entries()) {
+                    state[key] = value;
+                }
+                state.VSM = Array.from(form.querySelector('[name="VSM"]').selectedOptions).map(o => o.value);
+                state.RC = Array.from(form.querySelector('[name="RC"]').selectedOptions).map(o => o.value);
+                return state;
+            }
+
+            function renderCard(data, cardElement) {
+                // Usar selectores de atributos de datos para que funcione en cualquier carta (original o clonada)
+                cardElement.querySelector('[data-form-name="name"]').textContent = data.name || 'Card Name';
+                cardElement.querySelector('[data-form-name="dados"]').textContent = data.dados || 'e.g., 1d6';
+                cardElement.querySelector('[data-form-name="cause"]').textContent = data.cause || 'Causa';
+                cardElement.querySelector('[data-form-name="descripcion"]').textContent = data.descripcion || 'Descripción';
+                cardElement.querySelector('[data-form-name="tl"]').textContent = data.tl || 'accion';
+                cardElement.querySelector('[data-form-name="level"]').textContent = data.level === '0' ? 'T' : (data.level || '1');
+                cardElement.querySelector('[data-form-name="alc"]').textContent = data.alc === '0' ? 'Lanzador' : (data.alc ? data.alc + 'm' : '1m');
+                cardElement.querySelector('[data-form-name="duracion"]').textContent = data.duracion.trim() === '0' ? 'Instantaneo' : (data.duracion || '1 turno');
+
+                const descriptionElement = cardElement.querySelector('[data-form-name="descripcion"]');
+                descriptionElement.style.fontSize = fontSizes[data.descripcionFontSize] || fontSizes.medium;
+
+                const vsmOutput = cardElement.querySelector('[data-form-name="VSM"]');
+                vsmOutput.innerHTML = '';
+                (data.VSM || []).forEach(val => {
+                    const span = document.createElement('span');
+                    span.textContent = val;
+                    vsmOutput.appendChild(span);
+                });
+
+                const rcOutput = cardElement.querySelector('[data-form-name="RC"]');
+                rcOutput.innerHTML = '';
+                (data.RC || []).forEach(val => {
+                    const span = document.createElement('span');
+                    span.textContent = val;
+                    rcOutput.appendChild(span);
+                });
+
+                const color = typeColors[data.cardType] || 'black';
+                cardElement.querySelector('[data-form-name="level"]').style.backgroundColor = color;
+                cardElement.querySelector('.name').style.borderColor = color;
+            }
+
+            function getSavedCards() {
+                return JSON.parse(localStorage.getItem('savedCards') || '[]');
+            }
+
+            function updateCounter() {
+                const count = getSavedCards().length;
+                cardCounterSpan.textContent = count;
+            }
+
+            function handleSaveCard() {
+                const currentState = getCardState();
+                const savedCards = getSavedCards();
+                savedCards.push(currentState);
+                localStorage.setItem('savedCards', JSON.stringify(savedCards));
+                updateCounter();
+                const saveButton = document.getElementById('save-card');
+                saveButton.textContent = '¡Guardada!';
+                setTimeout(() => { saveButton.textContent = 'Guardar Carta Actual'; }, 1500);
+            }
+
+            async function handlePrintPdf() {
+                const printButton = document.getElementById('print-pdf');
+                const savedCards = getSavedCards();
+                if (savedCards.length === 0) {
+                    console.log('No hay cartas guardadas para imprimir.');
+                    return;
+                }
+
+                printButton.textContent = 'Generando PDF...';
+                printButton.disabled = true;
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const cardTemplate = document.querySelector('.card');
+                const cardWidthMM = 63;
+                const cardHeightMM = 88;
+                const marginX = 10;
+                const marginY = 10;
+                
+                const positions = [
+                    { x: marginX, y: marginY }, { x: marginX + cardWidthMM + 5, y: marginY },
+                    { x: marginX, y: marginY + cardHeightMM + 5 }, { x: marginX + cardWidthMM + 5, y: marginY + cardHeightMM + 5 },
+                ];
+
+                for (let i = 0; i < savedCards.length; i++) {
+                    const cardData = savedCards[i];
+                    const posIndex = i % 4;
+
+                    if (i > 0 && posIndex === 0) {
+                        doc.addPage();
+                    }
+                    
+                    renderCard(cardData, mainCardElement); // Renderiza en la tarjeta principal para la captura
+                    await new Promise(resolve => setTimeout(resolve, 50));
+
+                    const canvas = await html2canvas(mainCardElement, { 
+                        scale: 3,
+                        scrollY: -window.scrollY
+                    });
+                    const imgData = canvas.toDataURL('image/png');
+                    
+                    const pos = positions[posIndex];
+                    doc.addImage(imgData, 'PNG', pos.x, pos.y, cardWidthMM, cardHeightMM);
+                }
+
+                doc.save('mis_cartas.pdf');
+                
+                renderCard(getCardState(), mainCardElement); // Restaura la tarjeta principal
+                printButton.textContent = 'Imprimir PDF';
+                printButton.disabled = false;
+            }
+
+            function setupDirectEditing() {
+                mainCardElement.addEventListener('dblclick', (event) => {
+                    const target = event.target.closest('.editable-field');
+                    if (!target || target.isEditing) return;
+
+                    const formName = target.dataset.formName;
+                    const formElement = form.querySelector(`[name="${formName}"]`);
+                    if (!formElement || formElement.tagName === 'SELECT') return;
+
+                    target.isEditing = true;
+                    const originalValue = formElement.value;
+                    const editor = document.createElement(formElement.tagName === 'TEXTAREA' ? 'textarea' : 'input');
+                    
+                    if (editor.tagName === 'INPUT') {
+                        editor.type = formElement.type === 'number' ? 'number' : 'text';
+                    }
+                    
+                    editor.className = 'inline-editor';
+                    editor.value = formElement.value;
+                    
+                    target.innerHTML = '';
+                    target.appendChild(editor);
+                    editor.focus();
+                    editor.select();
+
+                    const finishEditing = (save) => {
+                        if (save) {
+                            formElement.value = editor.value;
+                        } else {
+                            formElement.value = originalValue;
+                        }
+                        formElement.dispatchEvent(new Event('input', { bubbles: true }));
+                        target.isEditing = false;
+                    };
+                    
+                    editor.addEventListener('blur', () => finishEditing(true));
+                    
+                    editor.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' && editor.tagName !== 'TEXTAREA') {
+                            e.preventDefault();
+                            finishEditing(true);
+                        }
+                        if (e.key === 'Escape') {
+                            finishEditing(false);
+                        }
+                    });
+                });
+
+                mainCardElement.addEventListener('click', (event) => {
+                    const target = event.target.closest('.editable-field');
+                    if (!target || target.isEditing) return;
+
+                    const formName = target.dataset.formName;
+                    const formElement = form.querySelector(`[name="${formName}"]`);
+                    if (!formElement || formElement.tagName !== 'SELECT') return;
+                    
+                    document.querySelector('.inline-dropdown')?.remove();
+                    createDropdown(target, formElement);
+                });
+            }
+
+            function createDropdown(targetElement, formSelect) {
+                const dropdown = document.createElement('div');
+                dropdown.className = 'inline-dropdown';
+
+                Array.from(formSelect.options).forEach(option => {
+                    const item = document.createElement('div');
+                    item.className = 'dropdown-item';
+                    item.textContent = option.textContent;
+                    if (option.selected) {
+                        item.classList.add('selected');
+                    }
+
+                    item.addEventListener('mousedown', (e) => {
+                        e.preventDefault();
+                        if (formSelect.multiple) {
+                            option.selected = !option.selected;
+                            item.classList.toggle('selected');
+                            formSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                        } else {
+                            formSelect.value = option.value;
+                            formSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                            dropdown.remove();
+                        }
+                    });
+                    dropdown.appendChild(item);
+                });
+
+                document.body.appendChild(dropdown);
+                const rect = targetElement.getBoundingClientRect();
+                dropdown.style.left = `${rect.left}px`;
+                dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+                dropdown.style.minWidth = `${rect.width}px`;
+
+                setTimeout(() => {
+                    const closeDropdown = (e) => {
+                        if (!dropdown.contains(e.target) && e.target !== targetElement) {
+                            dropdown.remove();
+                            document.removeEventListener('click', closeDropdown);
+                        }
+                    };
+                    document.addEventListener('click', closeDropdown);
+                }, 0);
+            }
+
+            function showSavedCardsGallery() {
+                const savedCards = getSavedCards();
+                const modal = document.createElement('div');
+                modal.className = 'gallery-modal';
+                
+                const galleryContent = document.createElement('div');
+                galleryContent.className = 'gallery-content';
+
+                savedCards.forEach((cardData, index) => {
+                    const cardContainer = document.createElement('div');
+                    cardContainer.className = 'gallery-card-container';
+
+                    const externalDiv = document.createElement('div');
+                    externalDiv.className = 'external';
+                    const cardDiv = mainCardElement.cloneNode(true);
+                    
+                    renderCard(cardData, cardDiv);
+                    externalDiv.appendChild(cardDiv);
+                    
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'delete-card-btn';
+                    deleteBtn.innerHTML = '&times;';
+                    deleteBtn.onclick = () => {
+                        savedCards.splice(index, 1);
+                        localStorage.setItem('savedCards', JSON.stringify(savedCards));
+                        modal.remove();
+                        showSavedCardsGallery();
+                        updateCounter();
+                    };
+
+                    cardContainer.appendChild(deleteBtn);
+                    cardContainer.appendChild(externalDiv);
+                    galleryContent.appendChild(cardContainer);
+                });
+
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'close-gallery-btn';
+                closeBtn.innerHTML = '&times;';
+                closeBtn.onclick = () => modal.remove();
+
+                modal.appendChild(galleryContent);
+                modal.appendChild(closeBtn);
+                document.body.appendChild(modal);
+            }
+
+            // --- INICIALIZACIÓN Y EVENTOS ---
+            form.addEventListener('input', () => renderCard(getCardState(), mainCardElement));
+            form.addEventListener('change', () => renderCard(getCardState(), mainCardElement));
+            document.getElementById('save-card').addEventListener('click', handleSaveCard);
+            document.getElementById('view-cards').addEventListener('click', showSavedCardsGallery);
+            document.getElementById('print-pdf').addEventListener('click', handlePrintPdf);
+
+            renderCard(getCardState(), mainCardElement);
+            updateCounter();
+            setupDirectEditing();
+        });
+    </script>
+</body>
+</html>
