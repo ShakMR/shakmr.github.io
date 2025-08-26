@@ -80,18 +80,27 @@
             transition: border-color 0.3s ease, background-color 0.2s;
         }
         
-        .name .level-span { /* Usar clase en lugar de ID para seleccionar */
+        .name .level-span, .name .type-emoji-span {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .name .level-span {
             background-color: black;
             color: white;
             border-radius: 50%;
             width: 24px;
             height: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             font-size: 0.9rem;
-            flex-shrink: 0;
             transition: background-color 0.3s ease;
+        }
+        
+        .name .type-emoji-span {
+            font-size: 1.25rem;
+            width: 28px;
+            height: 28px;
         }
 
         .effects {
@@ -170,6 +179,9 @@
             padding: 0.5rem;
             cursor: pointer;
             border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         .dropdown-item:hover {
             background-color: #f0f2f5;
@@ -191,6 +203,10 @@
             justify-content: center;
             gap: 1rem;
             z-index: 2000;
+        }
+
+        .action-bar button {
+            padding: 0.75rem 1.5rem; /* Padding aumentado */
         }
         
         .gallery-modal {
@@ -276,6 +292,7 @@
         <div class="external">
             <div class="card">
                 <div class="name">
+                    <span data-form-name="cardType" class="editable-field type-emoji-span"></span>
                     <span data-form-name="name" class="editable-field flex-grow name-span">Card Name</span>
                     <span data-form-name="level" class="editable-field level-span">1</span>
                 </div>
@@ -309,6 +326,11 @@
                 dano: '#ef4444', curacion: '#22c55e', buf: '#3b82f6',
                 debuf: '#a855f7', utilidad: '#f59e0b', social: '#ec4899'
             };
+            
+            const typeEmojis = {
+                dano: '⚔️', curacion: '❤️', buf: '💪',
+                debuf: '⛓️', utilidad: '🛠️', social: '💬'
+            };
 
             const fontSizes = {
                 small: '0.75rem', medium: '0.9rem', large: '1.05rem'
@@ -326,7 +348,6 @@
             }
 
             function renderCard(data, cardElement) {
-                // Usar selectores de atributos de datos para que funcione en cualquier carta (original o clonada)
                 cardElement.querySelector('[data-form-name="name"]').textContent = data.name || 'Card Name';
                 cardElement.querySelector('[data-form-name="dados"]').textContent = data.dados || 'e.g., 1d6';
                 cardElement.querySelector('[data-form-name="cause"]').textContent = data.cause || 'Causa';
@@ -358,6 +379,7 @@
                 const color = typeColors[data.cardType] || 'black';
                 cardElement.querySelector('[data-form-name="level"]').style.backgroundColor = color;
                 cardElement.querySelector('.name').style.borderColor = color;
+                cardElement.querySelector('.type-emoji-span').textContent = typeEmojis[data.cardType] || '⚔️';
             }
 
             function getSavedCards() {
@@ -379,6 +401,18 @@
                 saveButton.textContent = '¡Guardada!';
                 setTimeout(() => { saveButton.textContent = 'Guardar Carta Actual'; }, 1500);
             }
+            
+            function emojiToImage(emoji, size) {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                ctx.font = `${size * 0.8}px sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(emoji, size / 2, size / 2);
+                return canvas.toDataURL('image/png');
+            }
 
             async function handlePrintPdf() {
                 const printButton = document.getElementById('print-pdf');
@@ -393,15 +427,18 @@
 
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF('p', 'mm', 'a4');
-                const cardTemplate = document.querySelector('.card');
+                
                 const cardWidthMM = 63;
                 const cardHeightMM = 88;
-                const marginX = 10;
-                const marginY = 10;
-                
+                const pageMarginX = 10;
+                const pageMarginY = 10;
+                const cardGap = 5;
+
                 const positions = [
-                    { x: marginX, y: marginY }, { x: marginX + cardWidthMM + 5, y: marginY },
-                    { x: marginX, y: marginY + cardHeightMM + 5 }, { x: marginX + cardWidthMM + 5, y: marginY + cardHeightMM + 5 },
+                    { x: pageMarginX, y: pageMarginY }, 
+                    { x: pageMarginX + cardWidthMM + cardGap, y: pageMarginY },
+                    { x: pageMarginX, y: pageMarginY + cardHeightMM + cardGap }, 
+                    { x: pageMarginX + cardWidthMM + cardGap, y: pageMarginY + cardHeightMM + cardGap },
                 ];
 
                 for (let i = 0; i < savedCards.length; i++) {
@@ -412,22 +449,78 @@
                         doc.addPage();
                     }
                     
-                    renderCard(cardData, mainCardElement); // Renderiza en la tarjeta principal para la captura
-                    await new Promise(resolve => setTimeout(resolve, 50));
+                    const cardX = positions[posIndex].x;
+                    const cardY = positions[posIndex].y;
 
-                    const canvas = await html2canvas(mainCardElement, { 
-                        scale: 3,
-                        scrollY: -window.scrollY
-                    });
-                    const imgData = canvas.toDataURL('image/png');
+                    doc.setDrawColor(0);
+                    doc.setLineWidth(0.2);
+                    doc.roundedRect(cardX, cardY, cardWidthMM, cardHeightMM, 3, 3, 'S');
                     
-                    const pos = positions[posIndex];
-                    doc.addImage(imgData, 'PNG', pos.x, pos.y, cardWidthMM, cardHeightMM);
+                    const p = 3;
+                    const color = typeColors[cardData.cardType] || '#000000';
+                    doc.setDrawColor(color);
+                    doc.roundedRect(cardX + p, cardY + p, cardWidthMM - 2 * p, 8, 1, 1, 'S');
+
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(10);
+                    doc.text(cardData.name || 'Card Name', cardX + p + 8, cardY + p + 5.5);
+
+                    const emoji = typeEmojis[cardData.cardType] || '⚔️';
+                    const emojiImg = emojiToImage(emoji, 64); // 64 es la resolución de la imagen
+                    doc.addImage(emojiImg, 'PNG', cardX + p + 1.5, cardY + p + 1.5, 5, 5);
+
+
+                    const levelText = cardData.level === '0' ? 'T' : (cardData.level || '1');
+                    doc.setFillColor(color);
+                    doc.circle(cardX + cardWidthMM - p - 4, cardY + p + 4, 3, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(10);
+                    doc.text(levelText, cardX + cardWidthMM - p - 4, cardY + p + 5.5, { align: 'center' });
+                    doc.setTextColor(0, 0, 0);
+
+                    const effectsY = cardY + p + 10;
+                    const effectBoxWidth = (cardWidthMM - 2 * p - 4) / 3;
+                    const effectBoxHeight = 8;
+                    doc.setFontSize(7);
+                    doc.setFont('helvetica', 'normal');
+
+                    const effectsData = [
+                        { text: cardData.tl || 'accion' },
+                        { text: cardData.alc === '0' ? 'Lanzador' : (cardData.alc ? cardData.alc + 'm' : '1m') },
+                        { text: cardData.duracion.trim() === '0' ? 'Instantaneo' : (cardData.duracion || '1 turno') },
+                        { text: (cardData.VSM || []).join(' ') },
+                        { text: (cardData.RC || []).join(' ') },
+                        { text: cardData.dados || 'e.g., 1d6' }
+                    ];
+
+                    doc.setDrawColor('#000000');
+                    effectsData.forEach((effect, index) => {
+                        const row = Math.floor(index / 3);
+                        const col = index % 3;
+                        const ex = cardX + p + col * (effectBoxWidth + 2);
+                        const ey = effectsY + row * (effectBoxHeight + 2);
+                        doc.roundedRect(ex, ey, effectBoxWidth, effectBoxHeight, 2, 2, 'S');
+                        doc.text(effect.text, ex + effectBoxWidth / 2, ey + 5, { align: 'center' });
+                    });
+
+                    const causeY = effectsY + 2 * (effectBoxHeight + 2);
+                    const descY = causeY + 10;
+                    const boxWidth = cardWidthMM - 2 * p;
+                    
+                    doc.roundedRect(cardX + p, causeY, boxWidth, 8, 2, 2, 'S');
+                    doc.text(cardData.cause || 'Causa', cardX + p + 2, causeY + 5.5);
+
+                    const descHeight = cardHeightMM - (descY - cardY) - p;
+                    doc.roundedRect(cardX + p, descY, boxWidth, descHeight, 2, 2, 'S');
+                    
+                    const descFontSize = { small: 6, medium: 7, large: 8 }[cardData.descripcionFontSize] || 7;
+                    doc.setFontSize(descFontSize);
+                    const descLines = doc.splitTextToSize(cardData.descripcion || 'Descripción', boxWidth - 4);
+                    doc.text(descLines, cardX + p + 2, descY + 4);
                 }
 
                 doc.save('mis_cartas.pdf');
                 
-                renderCard(getCardState(), mainCardElement); // Restaura la tarjeta principal
                 printButton.textContent = 'Imprimir PDF';
                 printButton.disabled = false;
             }
@@ -483,6 +576,10 @@
                 mainCardElement.addEventListener('click', (event) => {
                     const target = event.target.closest('.editable-field');
                     if (!target || target.isEditing) return;
+                    
+                    if (target.matches('.name-span') || target.matches('.level-span')) {
+                        return;
+                    }
 
                     const formName = target.dataset.formName;
                     const formElement = form.querySelector(`[name="${formName}"]`);
@@ -500,7 +597,13 @@
                 Array.from(formSelect.options).forEach(option => {
                     const item = document.createElement('div');
                     item.className = 'dropdown-item';
-                    item.textContent = option.textContent;
+                    
+                    if (formSelect.name === 'cardType') {
+                        item.textContent = `${typeEmojis[option.value]} ${option.textContent}`;
+                    } else {
+                        item.textContent = option.textContent;
+                    }
+
                     if (option.selected) {
                         item.classList.add('selected');
                     }
