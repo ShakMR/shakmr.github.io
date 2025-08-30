@@ -49,11 +49,13 @@
             width: 8cm;
             height: 12cm;
             border-radius: 15px;
-            border: 1px solid var(--border-color);
+            /* El borde es ahora gestionado por el color de fondo */
+            border: 1px solid transparent; 
             padding: 10px;
             box-sizing: border-box;
             background-color: #ffffff;
             box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            transition: background-color 0.3s ease; /* Transición para el color */
         }
 
         .card {
@@ -71,13 +73,14 @@
         }
 
         .name {
-            border: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color); /* Cambiado a solo borde inferior */
             padding: 0.2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: bold;
-            transition: border-color 0.3s ease, background-color 0.2s;
+            transition: border-bottom-color 0.3s ease, background-color 0.2s; /* Transición actualizada */
+            font-size: 0.85rem; /* Sincronizado con PDF */
         }
         
         .name .level-span, .name .type-emoji-span {
@@ -93,7 +96,7 @@
             border-radius: 50%;
             width: 24px;
             height: 24px;
-            font-size: 0.9rem;
+            font-size: 0.85rem; /* Sincronizado con PDF */
             transition: background-color 0.3s ease;
         }
         
@@ -118,7 +121,7 @@
         .effects > * {
             padding: 0.2rem;
             text-align: center;
-            font-size: 0.8rem;
+            font-size: 0.6rem; /* Sincronizado con PDF */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -131,6 +134,10 @@
              min-height: 40px;
              word-break: break-word;
              white-space: pre-wrap;
+        }
+        
+        .causa-div {
+            font-size: 0.6rem; /* Sincronizado con PDF */
         }
         
         .descripcion-div {
@@ -331,9 +338,16 @@
                 dano: '⚔️', curacion: '❤️', buf: '💪',
                 debuf: '⛓️', utilidad: '🛠️', social: '💬'
             };
+            
+            const typePdfSymbols = {
+                dano: 'D', curacion: 'C', buf: 'B',
+                debuf: 'Db', utilidad: 'U', social: 'S'
+            };
 
             const fontSizes = {
-                small: '0.75rem', medium: '0.9rem', large: '1.05rem'
+                small: '0.5rem',  // PDF: 6pt
+                medium: '0.6rem', // PDF: 7pt
+                large: '0.67rem'  // PDF: 8pt
             };
 
             function getCardState() {
@@ -377,8 +391,20 @@
                 });
 
                 const color = typeColors[data.cardType] || 'black';
+                
+                // --- INICIO: Lógica para colorear el borde exterior ---
+                const externalElement = cardElement.parentElement;
+                if (externalElement && externalElement.classList.contains('external')) {
+                    const bgColor = data.cardType ? color : '#ffffff';
+                    // El borde siempre será del color, o negro si no hay tipo.
+                    const borderColor = data.cardType ? color : 'black';
+                    externalElement.style.backgroundColor = bgColor;
+                    externalElement.style.borderColor = borderColor;
+                }
+                // --- FIN: Lógica para colorear el borde exterior ---
+
                 cardElement.querySelector('[data-form-name="level"]').style.backgroundColor = color;
-                cardElement.querySelector('.name').style.borderColor = color;
+                cardElement.querySelector('.name').style.borderBottomColor = color; 
                 cardElement.querySelector('.type-emoji-span').textContent = typeEmojis[data.cardType] || '⚔️';
             }
 
@@ -451,35 +477,57 @@
                     
                     const cardX = positions[posIndex].x;
                     const cardY = positions[posIndex].y;
-
-                    doc.setDrawColor(0);
-                    doc.setLineWidth(0.2);
-                    doc.roundedRect(cardX, cardY, cardWidthMM, cardHeightMM, 3, 3, 'S');
-                    
-                    const p = 3;
                     const color = typeColors[cardData.cardType] || '#000000';
+
+                    // --- INICIO: Lógica de doble borde con relleno ---
+                    const outerPadding = 2; // Espacio entre bordes en mm
+
+                    // 1. Rellenar el área del borde exterior con el color del tipo
+                    doc.setFillColor(color);
+                    doc.roundedRect(cardX, cardY, cardWidthMM, cardHeightMM, 3, 3, 'F'); // 'F' for Fill
+
+                    // 2. Dibujar un rectángulo blanco interior para crear el efecto de borde
+                    doc.setFillColor(255, 255, 255); // Blanco
+                    const innerCardX = cardX + outerPadding;
+                    const innerCardY = cardY + outerPadding;
+                    const innerCardWidth = cardWidthMM - 2 * outerPadding;
+                    const innerCardHeight = cardHeightMM - 2 * outerPadding;
+                    doc.roundedRect(innerCardX, innerCardY, innerCardWidth, innerCardHeight, 2, 2, 'F');
+
+                    // 3. Dibujar el borde interior negro
+                    doc.setDrawColor(0); // Negro
+                    doc.setLineWidth(0.2);
+                    doc.roundedRect(innerCardX, innerCardY, innerCardWidth, innerCardHeight, 2, 2, 'S');
+                    // --- FIN: Lógica de doble borde con relleno ---
+                    
+                    const p = 3; // Padding interno
+                    
                     doc.setDrawColor(color);
-                    doc.roundedRect(cardX + p, cardY + p, cardWidthMM - 2 * p, 8, 1, 1, 'S');
+                    doc.setLineWidth(0.2);
+                    const nameBoxY = innerCardY + p;
+                    const nameBoxHeight = 8;
+                    doc.line(innerCardX + p, nameBoxY + nameBoxHeight, innerCardX + innerCardWidth - p, nameBoxY + nameBoxHeight);
+
 
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(10);
-                    doc.text(cardData.name || 'Card Name', cardX + p + 8, cardY + p + 5.5);
+                    doc.text(cardData.name || 'Card Name', innerCardX + p + 8, nameBoxY + 5.5);
 
                     const emoji = typeEmojis[cardData.cardType] || '⚔️';
-                    const emojiImg = emojiToImage(emoji, 64); // 64 es la resolución de la imagen
-                    doc.addImage(emojiImg, 'PNG', cardX + p + 1.5, cardY + p + 1.5, 5, 5);
+                    const emojiImg = emojiToImage(emoji, 64);
+                    doc.addImage(emojiImg, 'PNG', innerCardX + p + 1.5, nameBoxY + 1.5, 5, 5);
 
 
                     const levelText = cardData.level === '0' ? 'T' : (cardData.level || '1');
                     doc.setFillColor(color);
-                    doc.circle(cardX + cardWidthMM - p - 4, cardY + p + 4, 3, 'F');
+                    doc.circle(innerCardX + innerCardWidth - p - 4, nameBoxY + 4, 3, 'F');
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(10);
-                    doc.text(levelText, cardX + cardWidthMM - p - 4, cardY + p + 5.5, { align: 'center' });
+                    doc.text(levelText, innerCardX + innerCardWidth - p - 4, nameBoxY + 5.5, { align: 'center' });
                     doc.setTextColor(0, 0, 0);
 
-                    const effectsY = cardY + p + 10;
-                    const effectBoxWidth = (cardWidthMM - 2 * p - 4) / 3;
+                    const effectsY = nameBoxY + 10;
+                    const effectBoxWidth = (innerCardWidth - 2 * p - 4) / 3;
                     const effectBoxHeight = 8;
                     doc.setFontSize(7);
                     doc.setFont('helvetica', 'normal');
@@ -497,7 +545,7 @@
                     effectsData.forEach((effect, index) => {
                         const row = Math.floor(index / 3);
                         const col = index % 3;
-                        const ex = cardX + p + col * (effectBoxWidth + 2);
+                        const ex = innerCardX + p + col * (effectBoxWidth + 2);
                         const ey = effectsY + row * (effectBoxHeight + 2);
                         doc.roundedRect(ex, ey, effectBoxWidth, effectBoxHeight, 2, 2, 'S');
                         doc.text(effect.text, ex + effectBoxWidth / 2, ey + 5, { align: 'center' });
@@ -505,18 +553,18 @@
 
                     const causeY = effectsY + 2 * (effectBoxHeight + 2);
                     const descY = causeY + 10;
-                    const boxWidth = cardWidthMM - 2 * p;
+                    const boxWidth = innerCardWidth - 2 * p;
                     
-                    doc.roundedRect(cardX + p, causeY, boxWidth, 8, 2, 2, 'S');
-                    doc.text(cardData.cause || 'Causa', cardX + p + 2, causeY + 5.5);
+                    doc.roundedRect(innerCardX + p, causeY, boxWidth, 8, 2, 2, 'S');
+                    doc.text(cardData.cause || 'Causa', innerCardX + p + 2, causeY + 5.5);
 
-                    const descHeight = cardHeightMM - (descY - cardY) - p;
-                    doc.roundedRect(cardX + p, descY, boxWidth, descHeight, 2, 2, 'S');
+                    const descHeight = innerCardHeight - (descY - innerCardY) - p;
+                    doc.roundedRect(innerCardX + p, descY, boxWidth, descHeight, 2, 2, 'S');
                     
                     const descFontSize = { small: 6, medium: 7, large: 8 }[cardData.descripcionFontSize] || 7;
                     doc.setFontSize(descFontSize);
                     const descLines = doc.splitTextToSize(cardData.descripcion || 'Descripción', boxWidth - 4);
-                    doc.text(descLines, cardX + p + 2, descY + 4);
+                    doc.text(descLines, innerCardX + p + 2, descY + 4);
                 }
 
                 doc.save('mis_cartas.pdf');
@@ -656,8 +704,9 @@
                     externalDiv.className = 'external';
                     const cardDiv = mainCardElement.cloneNode(true);
                     
-                    renderCard(cardData, cardDiv);
+                    // Corregido: añadir al DOM ANTES de renderizar para que parentElement funcione
                     externalDiv.appendChild(cardDiv);
+                    renderCard(cardData, cardDiv);
                     
                     const deleteBtn = document.createElement('button');
                     deleteBtn.className = 'delete-card-btn';
@@ -699,3 +748,4 @@
     </script>
 </body>
 </html>
+
