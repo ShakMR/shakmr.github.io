@@ -1,0 +1,656 @@
+<html>
+    <head>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f5f5f5;
+                padding: 20px;
+            }
+
+            #spells-filters {
+                margin-bottom: 20px;
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+
+            #spells-filters input,
+            #spells-filters select {
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 14px;
+            }
+
+            .group-buttons {
+                margin-left: auto;
+                display: flex;
+                gap: 8px;
+            }
+
+            .group-button {
+                padding: 8px 16px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                background: white;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-size: 14px;
+            }
+
+            .group-button:hover {
+                background: #f5f5f5;
+            }
+
+            .group-button.active {
+                background: #3498db;
+                color: white;
+                border-color: #2980b9;
+            }
+
+            .group-title {
+                font-size: 1.5em;
+                color: #2c3e50;
+                margin: 30px 0 15px;
+                padding-bottom: 8px;
+                border-bottom: 2px solid #eee;
+                grid-column: 1 / -1;
+                animation: fadeIn 0.5s ease-out forwards;
+            }
+
+            #spells {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 20px;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .spell-card {
+                background-color: white;
+                border-radius: 8px;
+                padding: 20px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                transition: transform 0.2s ease;
+                animation: fadeIn 0.5s ease-out forwards;
+                opacity: 0;
+
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .spell-card:nth-child(n) {
+                animation-delay: calc(0.1s * var(--card-index, 0));
+            }
+
+            .spell-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            }
+
+            .spell-card h1 {
+                margin: 0 0 10px 0;
+                font-size: 1.5em;
+                color: #2c3e50;
+                border-bottom: 2px solid #eee;
+                padding-bottom: 8px;
+            }
+
+            .spell-card p {
+                margin: 8px 0;
+                line-height: 1.5;
+                color: #34495e;
+            }
+
+            .spell-card p:nth-child(2) {
+                font-weight: bold;
+                color: #e74c3c;
+            }
+
+            .spell-card p:nth-child(3) {
+                font-style: italic;
+                color: #3498db;
+            }
+
+            .spell-card .description {
+                margin-bottom: 8px; /* Space for the button */
+                transition: all 0.3s ease;
+            }
+
+            .spell-card .read-more {
+                background: none;
+                border: none;
+                color: #3498db;
+                cursor: pointer;
+                padding: 5px 0;
+                font-size: 0.9em;
+                text-decoration: underline;
+                display: block;
+                margin-top: -4px;
+                margin-bottom: 8px;
+            }
+
+            .spell-card .read-more:hover {
+                color: #2980b9;
+            }
+
+            .no-spells-message {
+                text-align: center;
+                padding: 40px;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                margin: 20px auto;
+                max-width: 600px;
+            }
+
+            .no-spells-message p {
+                font-size: 1.2em;
+                color: #2c3e50;
+                margin: 0;
+                line-height: 1.4;
+            }
+
+            .modal-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 1000;
+                backdrop-filter: blur(2px);
+                animation: fadeIn 0.3s ease-out;
+            }
+
+            .modal {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                max-width: 800px;
+                width: 90%;
+                max-height: 90vh;
+                overflow-y: auto;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            }
+
+            .modal-close {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                color: #7f8c8d;
+                transition: color 0.2s;
+            }
+
+            .modal-close:hover {
+                color: #2c3e50;
+            }
+
+            .spell-details {
+                display: grid;
+                gap: 20px;
+            }
+
+            .spell-details-header {
+                border-bottom: 2px solid #eee;
+                padding-bottom: 15px;
+                margin-bottom: 20px;
+            }
+
+            .spell-details-header h2 {
+                margin: 0;
+                color: #2c3e50;
+                font-size: 2em;
+            }
+
+            .spell-quick-info {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 15px;
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+            }
+
+            .spell-quick-info div {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .spell-quick-info label {
+                font-size: 0.9em;
+                color: #7f8c8d;
+                margin-bottom: 4px;
+            }
+
+            .spell-quick-info span {
+                font-weight: 500;
+                color: #2c3e50;
+            }
+
+            .spell-description {
+                line-height: 1.6;
+                color: #34495e;
+            }
+
+            .spell-higher-levels {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                margin-top: 20px;
+            }
+
+            .spell-higher-levels h3 {
+                margin: 0 0 10px 0;
+                color: #2c3e50;
+            }
+
+            .view-details-btn {
+                background: #3498db;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background 0.2s;
+                margin-top: 10px;
+                font-size: 0.9em;
+                padding: 1rem;
+            }
+
+            .view-details-btn:hover {
+                background: #2980b9;
+            }
+
+            .loading-message {
+                text-align: center;
+                padding: 40px;
+                font-size: 1.2em;
+                color: #2c3e50;
+            }
+
+            .loading-dots:after {
+                content: '.';
+                animation: dots 1.5s steps(5, end) infinite;
+            }
+
+            @keyframes dots {
+                0%, 20% { content: '.'; }
+                40% { content: '..'; }
+                60% { content: '...'; }
+                80%, 100% { content: ''; }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="modal-overlay" id="spell-modal">
+            <div class="modal">
+                <button class="modal-close">&times;</button>
+                <div class="spell-details"></div>
+            </div>
+        </div>
+        <p>Spells loaded: <span id="spells-loaded">0</span></p>
+        <div id="spells-filters">
+            <input type="text" id="spells-filter-name" placeholder="Name">
+            <input type="text" id="spells-filter-level" placeholder="Level">
+            <select id="spells-filter-class">
+                <option value="">All</option>
+                <option value="barbarian">Bárbaro</option>
+                <option value="bard">Bardo</option>
+                <option value="cleric">Clérigo</option>
+                <option value="druid">Druida</option>
+                <option value="fighter">Guerrero</option>
+                <option value="monk">Monje</option>
+                <option value="paladin">Paladín</option>
+                <option value="ranger">Explorador</option>
+                <option value="rogue">Pícaro</option>
+                <option value="sorcerer">Hechicero</option>
+                <option value="warlock">Brujo</option>
+                <option value="wizard">Mago</option>
+            </select>
+            <div class="group-buttons">
+                <button class="group-button active" data-group="none">Sin agrupar</button>
+                <button class="group-button" data-group="level">Por nivel</button>
+                <button class="group-button" data-group="alpha">Alfabético</button>
+            </div>
+        </div>
+        <div id="spells">
+ 
+        </div>
+    </body>
+    <script>
+        window.spells = [];
+        window.currentGrouping = 'none';
+
+        // check if spells are already loaded
+        if (localStorage.getItem('spells')) {
+            window.spells = JSON.parse(localStorage.getItem('spells'));
+            displaySpells();
+        } else {
+            fetch('https://raw.githubusercontent.com/Magical20-ai/5e-database-spanish/refs/heads/main/src/5e-SRD-Spells.json')
+                .then(response => response.json())
+                .then(data => {
+                    window.spells = data;
+                    localStorage.setItem('spells', JSON.stringify(window.spells));
+                    displaySpells();
+                });
+        }
+
+        function getClasses(spell) {
+            return spell.classes || spell.clases;
+        }
+
+        function getLevel(spell) {
+            return spell.level ?? spell.nivel;
+        }
+
+        function getHigherLevel(spell) {
+            return spell.higher_level || spell.nivel_superior;
+        }
+
+        function cardHTML(spell) {
+            const fullDesc = spell.desc.join(' '); // Join array of descriptions
+            const words = fullDesc.split(' ');
+            const isLongDescription = words.length > 40;
+            const shortDesc = isLongDescription ? words.slice(0, 40).join(' ') + '...' : fullDesc;
+            
+            return `
+                <div class="spell-card" data-spell-id="${spell.index}">
+                    <div class="spell-card-main">
+                        <h1>${spell.name}</h1>  
+                        <p>${getLevel(spell)}</p>
+                        <p>${getClasses(spell)?.map(c => c.name).join(', ')}</p>
+                        <p class="description" data-full-desc="${fullDesc}">${shortDesc}</p>
+                    </div>
+                    <button class="view-details-btn" onclick="showSpellDetails(this)">Ver detalles</button>
+                </div>
+            `;
+        }
+
+        function showSpellDetails(button) {
+            const spell = window.spells.find(s => 
+                s.index === button.closest('.spell-card').dataset.spellId
+            );
+            
+            if (!spell) return;
+
+            const modalContent = `
+                <div class="spell-details-header">
+                    <h2>${spell.name}</h2>
+                </div>
+                <div class="spell-quick-info">
+                    <div>
+                        <label>Nivel</label>
+                        <span>${getLevel(spell) || 'Truco'}</span>
+                    </div>
+                    <div>
+                        <label>Tiempo de Lanzamiento</label>
+                        <span>${spell.casting_time || spell.tiempo_lanzamiento || 'N/A'}</span>
+                    </div>
+                    <div>
+                        <label>Alcance</label>
+                        <span>${spell.range || spell.alcance || 'N/A'}</span>
+                    </div>
+                    <div>
+                        <label>Componentes</label>
+                        <span>${spell.components?.join(', ') || spell.componentes?.join(', ') || 'N/A'}</span>
+                    </div>
+                    <div>
+                        <label>Duración</label>
+                        <span>${spell.duration || spell.duracion || 'N/A'}</span>
+                    </div>
+                    <div>
+                        <label>Escuela</label>
+                        <span>${spell.school?.name || spell.escuela?.name || 'N/A'}</span>
+                    </div>
+                </div>
+                <div class="spell-description">
+                    ${spell.desc.join('<br><br>')}
+                </div>
+                ${getHigherLevel(spell) ? `
+                    <div class="spell-higher-levels">
+                        <h3>A Niveles Superiores</h3>
+                        <p>${getHigherLevel(spell)}</p>
+                    </div>
+                ` : ''}
+            `;
+
+            document.querySelector('.spell-details').innerHTML = modalContent;
+            const modal = document.getElementById('spell-modal');
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        // Close modal when clicking outside or on close button
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('spell-modal');
+            const closeBtn = modal.querySelector('.modal-close');
+
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        function setupReadMoreButtons() {
+            console.log('Setting up read more buttons...');
+            document.querySelectorAll('.spell-card').forEach(card => {
+                const btn = card.querySelector('.read-more');
+                if (!btn) return; // Skip if no button (short description)
+                
+                const desc = card.querySelector('.description');
+                const fullDesc = desc.getAttribute('data-full-desc');
+                
+                // Remove any existing listeners
+                btn.replaceWith(btn.cloneNode(true));
+                const newBtn = card.querySelector('.read-more');
+                
+                newBtn.addEventListener('click', () => {
+                    console.log('Button clicked');
+                    const isExpanded = desc.classList.contains('expanded');
+                    if (isExpanded) {
+                        desc.textContent = fullDesc.split(' ').slice(0, 40).join(' ') + '...';
+                        newBtn.textContent = 'Leer más';
+                    } else {
+                        desc.textContent = fullDesc;
+                        newBtn.textContent = 'Leer menos';
+                    }
+                    desc.classList.toggle('expanded');
+                });
+            });
+        }
+        
+        const noSpellsMessages = [
+            "¡Por la barba de Mystra! No encuentro ningún hechizo...",
+            "Parece que el Libro de Hechizos está en blanco. ¿Tinta invisible quizás? 🤔",
+            "¡Un Devorador de Magia debe haberse comido estos hechizos!",
+            "Ni siquiera con una tirada de 20 en Arcano encuentro estos hechizos...",
+            "¿Has probado a decir 'Alohomora'? Ah no, perdón, juego equivocado 😅",
+            "El Archimago está de vacaciones, vuelve más tarde",
+            "Error 404: Pergamino no encontrado",
+            "Los hechizos están en una mazmorra... ¡con el tesoro!",
+            "¡Un Beholder ha desintegrado estos hechizos!",
+            "¡Ups! El aprendiz confundió el grimorio con la lista de la compra... 🛒"
+        ];
+
+        function groupSpells(spells, grouping) {
+            if (grouping === 'none') return { '': spells };
+            
+            const groups = {};
+            
+            if (grouping === 'level') {
+                spells.forEach(spell => {
+                    const level = getLevel(spell) || 0;
+                    const groupName = level === 0 ? 'Trucos' : `Nivel ${level}`;
+                    groups[groupName] = groups[groupName] || [];
+                    groups[groupName].push(spell);
+                });
+                
+                // Ordenar las claves para que los niveles aparezcan en orden
+                const sortedGroups = {};
+                Object.keys(groups).sort((a, b) => {
+                    if (a === 'Trucos') return -1;
+                    if (b === 'Trucos') return 1;
+                    return parseInt(a.split(' ')[1]) - parseInt(b.split(' ')[1]);
+                }).forEach(key => {
+                    sortedGroups[key] = groups[key];
+                });
+                return sortedGroups;
+            }
+            
+            if (grouping === 'alpha') {
+                spells.forEach(spell => {
+                    const firstLetter = spell.name[0].toUpperCase();
+                    groups[firstLetter] = groups[firstLetter] || [];
+                    groups[firstLetter].push(spell);
+                });
+                return Object.keys(groups).sort().reduce((obj, key) => {
+                    obj[key] = groups[key];
+                    return obj;
+                }, {});
+            }
+            
+            return { '': spells };
+        }
+
+        async function displaySpells(isFiltering = false) {
+            const spells = window.filteredSpells || window.spells;
+            const spellsContainer = document.getElementById('spells');
+            
+            // Show loading message
+            spellsContainer.innerHTML = '<div class="loading-message">Buscando en el grimorio<span class="loading-dots"></span></div>';
+            
+            // Minimum delay for visual feedback
+            if (isFiltering) {
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+            
+            // Update the counter
+            document.getElementById('spells-loaded').textContent = spells.length;
+            
+            // Clear and repopulate the container
+            spellsContainer.innerHTML = '';
+
+            if (spells.length === 0) {
+                const randomMessage = noSpellsMessages[Math.floor(Math.random() * noSpellsMessages.length)];
+                spellsContainer.innerHTML = `
+                    <div class="no-spells-message">
+                        <p>${randomMessage}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Group spells according to current grouping
+            const groupedSpells = groupSpells(spells, window.currentGrouping);
+            let globalIndex = 0;
+            
+            // Create a document fragment for better performance
+            const fragment = document.createDocumentFragment();
+            
+            Object.entries(groupedSpells).forEach(([groupName, groupSpells]) => {
+                if (groupName) {
+                    const title = document.createElement('h2');
+                    title.className = 'group-title';
+                    title.textContent = groupName;
+                    title.style.setProperty('--card-index', globalIndex++);
+                    fragment.appendChild(title);
+                }
+                
+                groupSpells.forEach(spell => {
+                    const tempContainer = document.createElement('div');
+                    tempContainer.innerHTML = cardHTML(spell);
+                    const card = tempContainer.firstElementChild;
+                    card.style.setProperty('--card-index', globalIndex++);
+                    fragment.appendChild(card);
+                });
+            });
+            
+            spellsContainer.appendChild(fragment);
+            
+            setupReadMoreButtons();
+        }
+
+        function filterSpells() {
+            const nameFilter = document.getElementById('spells-filter-name').value.toLowerCase();
+            const levelFilter = document.getElementById('spells-filter-level').value;
+            const classFilter = document.getElementById('spells-filter-class').value;
+            
+            window.filteredSpells = window.spells.filter(spell => {
+                // Name filter - case insensitive partial match
+                const nameMatch = spell.name?.toLowerCase().includes(nameFilter);
+                
+                // Level filter - exact match, empty means all levels
+                const levelMatch = !levelFilter || getLevel(spell)?.toString() === levelFilter;
+                
+                // Class filter - match if spell is available to the selected class
+                const classMatch = !classFilter || getClasses(spell)?.some(c => c.index === classFilter);
+                
+                return nameMatch && levelMatch && classMatch;
+            });
+            
+            displaySpells(true);
+        }
+        
+        // Debounce function to limit how often filterSpells is called
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        // Debounced filter function for better performance
+        const debouncedFilter = debounce(filterSpells, 300);
+        
+        // Set listeners for filters
+        document.getElementById('spells-filter-name').addEventListener('input', debouncedFilter);
+        document.getElementById('spells-filter-level').addEventListener('input', debouncedFilter);
+        document.getElementById('spells-filter-class').addEventListener('change', filterSpells); // No debounce needed for select
+
+        // set listeners for grouping buttons
+        document.querySelectorAll('.group-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active state
+                document.querySelectorAll('.group-button').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Update grouping and redisplay
+                window.currentGrouping = button.dataset.group;
+                displaySpells(true);
+            });
+        });
+    </script>
+</html>
