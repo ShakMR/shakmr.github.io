@@ -1,5 +1,6 @@
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
             body {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -299,6 +300,104 @@
                 40% { content: '..'; }
                 60% { content: '...'; }
                 80%, 100% { content: ''; }
+            }
+
+            /* Mobile Styles */
+            @media screen and (max-width: 768px) {
+                body {
+                    padding: 10px;
+                }
+
+                #spells-filters {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+
+                #spells-filters input,
+                #spells-filters select {
+                    width: 100%;
+                    font-size: 16px; /* Better for mobile tap targets */
+                    padding: 12px;
+                }
+
+                .group-buttons {
+                    margin-left: 0;
+                    width: 100%;
+                    justify-content: space-between;
+                }
+
+                .group-button {
+                    flex: 1;
+                    padding: 10px 8px;
+                    font-size: 13px;
+                    text-align: center;
+                }
+
+                #spells {
+                    grid-template-columns: 1fr;
+                    gap: 15px;
+                }
+
+                .spell-card {
+                    padding: 15px;
+                }
+
+                .spell-card h1 {
+                    font-size: 1.3em;
+                }
+
+                .modal {
+                    padding: 20px;
+                    width: 95%;
+                }
+
+                .spell-details-header h2 {
+                    font-size: 1.5em;
+                }
+
+                .spell-quick-info {
+                    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                    padding: 12px;
+                }
+
+                .view-details-btn {
+                    padding: 12px;
+                    width: 100%;
+                }
+
+                .modal-close {
+                    top: 10px;
+                    right: 10px;
+                }
+
+                .group-title {
+                    font-size: 1.3em;
+                    margin: 20px 0 10px;
+                }
+            }
+
+            /* Small Mobile Styles */
+            @media screen and (max-width: 380px) {
+                body {
+                    padding: 8px;
+                }
+
+                .group-button {
+                    font-size: 12px;
+                    padding: 8px 4px;
+                }
+
+                .spell-card h1 {
+                    font-size: 1.2em;
+                }
+
+                .spell-details-header h2 {
+                    font-size: 1.3em;
+                }
+
+                .spell-quick-info {
+                    grid-template-columns: 1fr;
+                }
             }
         </style>
     </head>
