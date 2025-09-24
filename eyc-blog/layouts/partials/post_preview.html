@@ -1,0 +1,46 @@
+<article class="post-preview">
+    <a href="{{ .Permalink }}">
+        {{ if .Params.image }}
+        <div class="hero-image">
+            <img src="{{ .Params.image }}" alt="{{ .Title }}" class="img-title" />
+        </div>
+        {{ end }}
+        {{ if .Params.video }}
+        <video loop autoplay muted playsinline class="img-title">
+            <source src="{{ .Params.video }}">
+        </video>
+        {{ end }}
+        <div class="post-title-container">
+            <h2 class="post-title">{{ .Title }}</h2>
+            <div class="post-meta-container">
+                <span class="post-meta">
+                    {{ partial "post_meta.html" . }}
+                </span>
+                {{ if .Params.subtitle }}
+                <h3 class="post-subtitle">
+                    {{ .Params.subtitle }}
+                </h3>
+                {{ end }}
+            </div>
+        </div>
+    </a>
+
+    <div class="post-entry">
+        {{ if or (.Truncated) (.Params.summary) }}
+        {{ .Summary }}
+        {{ else }}
+        {{ .Content | safeHTML | truncate 100 }}
+        {{ end }}
+        <div class="post-entry-footer">
+            <div class="blog-tags">
+                {{ if .Params.tags }}
+                    Tags:
+                    {{ range .Params.tags }}
+                    <a href="{{"tags" | absLangURL}}/{{ . | urlize }}/">{{ . }}</a>&nbsp;
+                    {{ end }} 
+                {{ end }}
+            </div>
+            <a href="{{ .Permalink }}" class="post-read-more">[{{ i18n "readMore" }}]</a>
+        </div>
+    </div>
+</article>
