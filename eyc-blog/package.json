@@ -8,7 +8,9 @@
     "dev:server": "tinacms dev -c 'hugo server -D -p 1313'",
     "build": "tinacms build && hugo",
     "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && hugo",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:hugo": "hugo --destination ../blog",
+    "deploy": "npm run build:hugo && git add --force ../blog && git commit -m 'Update blog' && git push origin primary:public"
   },
   "repository": {
     "type": "git",
