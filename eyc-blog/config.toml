@@ -1,0 +1,17 @@
+baseURL = 'http://example.org/'
+languageCode = 'es-es'
+title = 'A poc a poc i amb bona lletra'
+theme = "beautifulhugo"
+defaultContentLanguage = "es"
+
+[Params]
+  subtitle = "My world of words"
+  mainSections = ["posts"]
+  favicon = "img/favicon.png"
+  logo = "img/blogo/logo-opti.png"
+
+[menu]
+  [[menu.main]]
+    name = "Acerca de"
+    url = "/about"
+    weight = 2
