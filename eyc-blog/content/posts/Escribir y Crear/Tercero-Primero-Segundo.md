@@ -7,7 +7,7 @@ tags:
   - eyc
   - gatos
   - curso
-image: /uploads/Gemini_Generated_Image_jb60iyjb60iyjb60.png
+image: /blog/uploads/Gemini_Generated_Image_jb60iyjb60iyjb60.png
 summary: >-
   Hacía meses que no era capaz de quitarse el estrés del cuerpo. Se despertaba
   todas las mañanas pensando en renunciar. En realidad, nunca lo hacía. Se decía

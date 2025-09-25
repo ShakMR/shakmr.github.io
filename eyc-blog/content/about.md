@@ -1,6 +1,6 @@
 ---
 title: Acerca de
-image: /uploads/20240120_135653.jpg
+image: /blog/uploads/20240120_135653.jpg
 type: about
 ---
 
