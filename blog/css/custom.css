@@ -26,3 +26,17 @@
     width: auto;
     max-height: 400px;
 }
+
+.blog-post p {
+    line-height: 2;
+    text-indent: 6rem;
+}
+
+.posts-subheading {
+    font-size: 2rem;
+}
+
+.post-meta {
+    display: flex;
+    flex-direction: column;
+}
