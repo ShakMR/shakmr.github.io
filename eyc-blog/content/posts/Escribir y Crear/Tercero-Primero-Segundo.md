@@ -1,7 +1,7 @@
 ---
 title: 'Tercero, Primero, Segundo'
 author: Borja
-subtitle: Escuela de escritores - Modulo 1
+subtitle: Escuela de escritores - Menos es más
 date: 2025-09-17T00:00:00.000Z
 tags:
   - eyc
