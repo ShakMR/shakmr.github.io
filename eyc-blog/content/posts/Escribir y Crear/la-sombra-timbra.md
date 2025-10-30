@@ -1,3 +1,18 @@
+---
+title: 'Cuando la sombra timbra'
+author: Borja
+subtitle: Escuela de escritores - Al borde del sofá 
+date: 2025-10-15T00:00:00.000Z
+tags:
+  - eyc
+  - tension
+  - terror
+  - curso
+image: /blog/uploads/Gemini_Generated_Image_jb60iyjb60iyjb60.png
+summary: >-
+  Un ruido animal me ha despertado de mis sueños o no del todo.
+---
+
 ¡¿Qué ha sido eso?! Parecía un sonido animal. Demasiado agudo y estridente para ser un rugido. Tengo los ojos abiertos, solo veo oscuridad. No puedo mover más que mis ojos. Los brazos, las manos, los dedos, los pies. Nada me responde.
 	Siento frío en la nuca. Veo pasar algo oscuro, más oscuro que lo que ya me rodea, por mi lado izquierdo. Intento ver en esa dirección, pero no vuelvo a verlo.
 
