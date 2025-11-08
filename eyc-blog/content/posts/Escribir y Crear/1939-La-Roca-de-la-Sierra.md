@@ -3,7 +3,7 @@ title: '1939, La Roca de la Sierra'
 author: Borja
 subtitle: Escuela de escritores - Cualquier tiempo pasado
 date: 2025-10-01T00:00:00.000Z
-draft: true
+draft: false
 tags:
   - curso
   - ficción histórica
