@@ -3,6 +3,10 @@ title: Universidad Politécnica de Villaroca
 author: Borja
 subtitle: Escuela de Escritura - El sentido de la maravilla
 date: 2025-10-29T00:00:00.000Z
+tags:
+  - curso
+  - eyc
+  - fantasia
 image: /blog/uploads/Gemini_Generated_Image_xgajdfxgajdfxgaj.png
 ---
 
