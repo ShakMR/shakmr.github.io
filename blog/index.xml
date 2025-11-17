@@ -6,8 +6,15 @@
     <description>Recent content on A poc a poc i amb bona lletra</description>
     <generator>Hugo</generator>
     <language>es-es</language>
-    <lastBuildDate>Wed, 05 Nov 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 11 Nov 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://shakmr.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Alex</title>
+      <link>https://shakmr.github.io/blog/posts/escribir-y-crear/alex/</link>
+      <pubDate>Tue, 11 Nov 2025 00:00:00 +0000</pubDate>
+      <guid>https://shakmr.github.io/blog/posts/escribir-y-crear/alex/</guid>
+      <description>Las grietas del techo de la clase son largas, algunas más que otras, hay muchas, creo que llevo ya contadas como tres y todavía me falta media pared, y son erráticas como el monólogo que estaba dando la profesora Elena. Ahí está también Alex&amp;hellip;</description>
+    </item>
     <item>
       <title>Cien Metros a la Salvación</title>
       <link>https://shakmr.github.io/blog/posts/escribir-y-crear/cien-metros-a-la-salvacin/</link>
@@ -69,7 +76,7 @@
       <link>https://shakmr.github.io/blog/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://shakmr.github.io/blog/about/</guid>
-      <description>&lt;p&gt;Este blog nace con la idea de compartir, principalmente, los relatos que escriba como parte del curso de escritura creativa &amp;ldquo;Escribe y Crea&amp;rdquo; en &lt;a href=&#34;escueladeescritores.com&#34;&gt;escueladeescritores.com&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Más o menos cada semana tenemos que presentar un relato nuevo. Iré publicandolos aquí. Nada más, enjoy.&lt;/p&gt;</description>
+      <description>&lt;p&gt;Este blog nace con la idea de compartir, principalmente, los relatos que escriba como parte del curso de escritura creativa &amp;ldquo;Escribe y Crea&amp;rdquo; en &lt;a href=&#34;escueladeescritores.com&#34;&gt;escueladeescritores.com&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Más o menos cada semana tenemos que presentar un relato nuevo. Iré publicándolos aquí.&#xA;Por ahora los textos publicados son sin aplicar correcciones y comentarios de profesores y compañeros. Si acaso eso lo publicaré más adelante para alguno de estos textos.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>
