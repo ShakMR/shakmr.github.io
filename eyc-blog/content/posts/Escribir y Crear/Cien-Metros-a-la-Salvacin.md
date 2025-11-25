@@ -16,7 +16,7 @@ summary: >-
   en par.
 ---
 
-Un temblor. Lucía levantó los ojos del plato que descansaba en su regazo. La temperatura del ambiente parecía haber subido de repente y ella estaba empezando a sudar. Delante de ella, su Ezequiel miraba por encima de Cris, sentado a su derecha; con la mandíbula desencajada y los ojos abiertos de par en par.
+&#x9;Un temblor. Lucía levantó los ojos del plato que descansaba en su regazo. La temperatura del ambiente parecía haber subido de repente y ella estaba empezando a sudar. Delante de ella, su Ezequiel miraba por encima de Cris, sentado a su derecha; con la mandíbula desencajada y los ojos abiertos de par en par.
 
 &#x9;El suelo volvió a crujir. Una piedra cayó del cielo como un halcón tras su presa. Lucía pestañeó. Golpeó a Ezequiel en la sien. Al abrir los ojos, Lucía encontró a su amigo tendido en el suelo, mirando al cielo con una mueca.
 

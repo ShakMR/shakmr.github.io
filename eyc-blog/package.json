@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tinacms dev -c \"hugo server -D\"",
     "dev:server": "tinacms dev -c 'hugo server -D -p 1313'",
+    "prod:server": "tinacms dev -c 'hugo server --environment production -p 1313'",
     "build": "tinacms build && hugo",
     "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && hugo",
     "test": "echo \"Error: no test specified\" && exit 1",

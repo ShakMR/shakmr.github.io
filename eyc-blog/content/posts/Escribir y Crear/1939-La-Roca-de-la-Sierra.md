@@ -17,11 +17,11 @@ image: /blog/uploads/Gemini_Generated_Image_mtatpfmtatpfmtat.png
 
 &#x9;Su madre le dio un apretón en la mano por la que estaban conectadas. Urbana notó un calor que irradiaba desde esa conexión, le recorría el cuerpo y le hacía expulsar las terroríficas imágenes. Aun así, la presión en el pecho persistía, mantuvo la cabeza gacha.
 
-&#x9;	—Buenos días, Inés —saludo el Padre dirigiéndose a Urbana cuando llegaron a la iglesia—, ¿tienes hambre, pequeña?
+&#x9;—Buenos días, Inés —saludo el Padre dirigiéndose a Urbana cuando llegaron a la iglesia—, ¿tienes hambre, pequeña?
 
 &#x9;Inés, para la iglesia, asintió educadamente y, con el protocolo bien aprendido, se giró hacia la señorita Rosa que ya le extendía la mano. Ines paso de la mano de su madre a la de la joven y con la otra mano se despidió. Su madre se quedó allí parada mientras ella se iba.
 
-&#x9;	—Usted por aquí, señora Del… —la puerta se cerró.
+&#x9;—Usted por aquí, señora Del… —la puerta se cerró.
 
 &#x9;Una vez dentro, se destensó. Aquí los uniformes verdes no entraban nunca. Junto al resto de niños, siguieron con el ritual: las oraciones de pie mirando hacia la bandera. «Gracias, Señor, por estos alimentos…» y «Gracias a los valientes que luchan por liberarnos del caos y la anarquía…». Ella, que no entendía todas aquellas palabras, las repitió obedientemente.
 
@@ -31,7 +31,7 @@ image: /blog/uploads/Gemini_Generated_Image_mtatpfmtatpfmtat.png
 
 &#x9;Una vez en casa, mientras su madre servía la comida al resto de la familia, alguien entró en tromba desde la calle. Todos se giraron sobresaltados pero enseguida vieron quien era. ¡Su padre llegaba pronto hoy! Urbana fue corriendo hacia él.
 
-&#x9;	—Han ganado —musitó.
+&#x9;—Han ganado —musitó.
 
 &#x9;
 

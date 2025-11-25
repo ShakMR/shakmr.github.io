@@ -2,9 +2,9 @@ import { defineConfig } from "tinacms";
 import Post from "./collections/post";
 
 export default defineConfig({
-  clientId: '',
-  branch: '',
-  token: '',
+  clientId: 'clientid',
+  branch: 'branch',
+  token: 'token',
   build: {
     outputFolder: "admin",
     publicFolder: "static",

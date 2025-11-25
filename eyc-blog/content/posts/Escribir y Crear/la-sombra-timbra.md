@@ -12,7 +12,7 @@ image: /blog/uploads/Gemini_Generated_Image_bp1o0pbp1o0pbp1o.png
 summary: Un ruido animal me ha despertado de mis sueños o no del todo.
 ---
 
-¡¿Qué ha sido eso?! Parecía un sonido animal. Demasiado agudo y estridente para ser un rugido. Tengo los ojos abiertos, solo veo oscuridad. No puedo mover más que mis ojos. Los brazos, las manos, los dedos, los pies. Nada me responde.
+&#x9;¡¿Qué ha sido eso?! Parecía un sonido animal. Demasiado agudo y estridente para ser un rugido. Tengo los ojos abiertos, solo veo oscuridad. No puedo mover más que mis ojos. Los brazos, las manos, los dedos, los pies. Nada me responde.
 
 &#x9;Siento frío en la nuca. Veo pasar algo oscuro, más oscuro que lo que ya me rodea, por mi lado izquierdo. Intento ver en esa dirección, pero no vuelvo a verlo.
 
@@ -28,7 +28,7 @@ summary: Un ruido animal me ha despertado de mis sueños o no del todo.
 
 &#x9;Ese sonido… es el timbre de la calle. Muevo un brazo trabajosamente y me libero de la sábana. Me levanto y corro hacia el interfono con Auri a mi espalda patrullando el pasillo.
 
-Ya frente al monitor veo la puerta del edificio, con unos imposibles tonos irreales de la visión nocturna de la cámara.
+&#x9;Ya frente al monitor veo la puerta del edificio, con unos imposibles tonos irreales de la visión nocturna de la cámara.
 
 &#x9;Agarro el telefonillo y escucho, aguantando la respiración. De repente, en el borde de la pantalla aparece media cara y se queda ahí mirando al frente sin pestañear. Se gira y entra en el edificio.
 
