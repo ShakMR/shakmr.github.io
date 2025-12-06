@@ -7,7 +7,7 @@ tags:
   - curso
   - eyc
   - que contar
-image: /blog/uploads/Gemini_Generated_Image_ubd8bgubd8bgubd8.png
+image: /uploads/volcan.webp
 summary: >-
   Un temblor. Lucía levantó los ojos del plato que descansaba en su regazo. La
   temperatura del ambiente parecía haber subido de repente y ella estaba

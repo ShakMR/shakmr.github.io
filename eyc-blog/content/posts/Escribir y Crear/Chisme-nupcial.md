@@ -7,7 +7,7 @@ tags:
   - curso
   - eyc
   - los que hablan
-image: /uploads/historia_boda.png
+image: /uploads/historia_boda.webp
 summary: >-
   Un camarero un poco cotilla nos explica un chisme que escucho en la boda de
   Antonella y Martón

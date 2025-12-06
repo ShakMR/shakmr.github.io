@@ -8,7 +8,7 @@ tags:
   - curso
   - ficción histórica
   - relato
-image: /blog/uploads/Gemini_Generated_Image_mtatpfmtatpfmtat.png
+image: /uploads/la-sierra.webp
 ---
 
 &#x9;1 de abril, hoy tocaba visita al comedor del Auxilio Social. Urbana y su madre llegaron a la plaza del pueblo por la calle del ayuntamiento. Al otro lado, la antigua iglesia del pueblo con su campanario y, el comedor social. Urbana miro a cada una de las personas que allí se encontraban. Al fondo: el Padre Juan y la señorita Rosa. Cerca del ayuntamiento habían unos cuantos hombres escuchando la radio comunal. Mientras se adentraban más en la plaza vio movimiento en el perímetro de su visión. Aparecieron aquellos hombres de verde, y ella no pudo más que agachar la cabeza y cerrar fuertemente los ojos.

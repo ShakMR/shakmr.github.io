@@ -7,7 +7,7 @@ tags:
   - curso
   - eyc
   - fantasia
-image: /blog/uploads/Gemini_Generated_Image_xgajdfxgajdfxgaj.png
+image: /uploads/villarroca.webp
 ---
 
 &#x9;«gi·gi·run rungi·run·ran esst·di·soo», derecha, ir, playa. Fran llevaba diez minutos con el diccionario, intentando descifrar la inscripción del cartel en el Piedrónico. Miró la hora en su reloj de pulsera. Las manillas, inmóviles desde su llegada, marcaban las dos de la tarde. Mirando al sol, estimó que le debía quedar todavía otra hora para llegar a admisiones. Si perdía aquel plazo, no tendría otra oportunidad ese año. Aceleró su búsqueda por las páginas en el diccionario.

@@ -8,7 +8,7 @@ tags:
   - tension
   - terror
   - curso
-image: /blog/uploads/Gemini_Generated_Image_bp1o0pbp1o0pbp1o.png
+image: /uploads/cama.webp
 summary: Un ruido animal me ha despertado de mis sueños o no del todo.
 ---
 
@@ -40,4 +40,4 @@ summary: Un ruido animal me ha despertado de mis sueños o no del todo.
 
 &#x9;—Eh… Enseguida voy —no salgo de mi asombro.
 
-Me dispongo a salir, con las llaves. ¡Espera! Me doy una vuelta completa buscando algo. El madero. Menos mal que no he tirado la basura. Agarro la tabla de tres centímetros de grosor y salgo al rellano. 
+Me dispongo a salir, con las llaves. ¡Espera! Me doy una vuelta completa buscando algo. El madero. Menos mal que no he tirado la basura. Agarro la tabla de tres centímetros de grosor y salgo al rellano.

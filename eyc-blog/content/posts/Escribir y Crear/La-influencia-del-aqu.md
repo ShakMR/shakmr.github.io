@@ -7,7 +7,7 @@ tags:
   - curso
   - relato
   - no-lugar
-image: /blog/uploads/Gemini_Generated_Image_2jst9i2jst9i2jst.png
+image: /uploads/centro-comercial.webp
 ---
 
 &#x9;Para las stories de hoy he venido al centro comercial con unos Levi’s y una americana de Massimo Duty. Complementado con mis zapatillas «Louis Vuitton» le dan el toque justo de lujo. La «L» y la «V» no están exactamente en la posición que deberían, pero eso la cámara no lo verá.

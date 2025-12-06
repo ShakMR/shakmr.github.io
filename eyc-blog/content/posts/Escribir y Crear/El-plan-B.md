@@ -7,7 +7,7 @@ tags:
   - curso
   - eyc
   - deseo
-image: /blog/uploads/Gemini_Generated_Image_n9gm6un9gm6un9gm.png
+image: /uploads/bar.webp
 summary: >-
   Después del largo y fastidioso día que había tenido, nada le apetecía más que
   sentarse en la mesa del fondo de un bar barato, oscuro y con olor a humedad,

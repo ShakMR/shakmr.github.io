@@ -7,7 +7,7 @@ tags:
   - eyc
   - gatos
   - curso
-image: /blog/uploads/Gemini_Generated_Image_jb60iyjb60iyjb60.png
+image: /uploads/gato.webp
 summary: >-
   Hacía meses que no era capaz de quitarse el estrés del cuerpo. Se despertaba
   todas las mañanas pensando en renunciar. En realidad, nunca lo hacía. Se decía
@@ -25,11 +25,11 @@ summary: >-
 
 &#x9; su derecha, había unos ojos amarillos, tan seguros de sí mismos como si fuese un dios en miniatura. El gato, con un pelaje blanco tan esponjoso que podría haber sido un plumero, inclinó ligeramente la cabeza como si estuviera preguntando algo. Entre el pelaje apareció un collar gris con una pequeña inscripción: «3º B».
 
-&#x9;&#x9;—En el tercero solo hay un Airbnb, ¿Tú no eres de por aquí verdad?
+&#x9;	—En el tercero solo hay un Airbnb, ¿Tú no eres de por aquí verdad?
 
-&#x9;&#x9;—¿Miau? –dijo el gato como respuesta.
+&#x9;	—¿Miau? –dijo el gato como respuesta.
 
-&#x9;&#x9;—¿Qué voy a hacer contigo?
+&#x9;	—¿Qué voy a hacer contigo?
 
 &#x9; pesar de poner carteles por arriba, por abajo y en todas las esquinas, nadie se había puesto en contacto con él. Así pues, le dio el nombre de Tercero, en honor a la inscripción de su collar.
 
@@ -39,9 +39,9 @@ summary: >-
 
 &#x9;n mes después, cuando ya se había olvidado de los carteles de «Se busca», un número desconocido se pintó en la pantalla de su teléfono. Contestó.
 
-&#x9;&#x9;—Hola, estamos buscando a Bigotitos –sentenció el desconocido.
+&#x9;	—Hola, estamos buscando a Bigotitos –sentenció el desconocido.
 
-&#x9;&#x9;—¿Bigotitos?
+&#x9;	—¿Bigotitos?
 
 &#x9;abiéndose marchado «Bigotitos», Carlos volvió a vivir en modo automático. El silencio volvía al prado. Ya no era conocido.
 

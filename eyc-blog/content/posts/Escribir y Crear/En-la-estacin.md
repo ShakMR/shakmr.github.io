@@ -8,7 +8,7 @@ tags:
   - curso
   - estacion
   - personaje
-image: /blog/uploads/Gemini_Generated_Image_mfbhd4mfbhd4mfbh.png
+image: /uploads/estacion.webp
 summary: El personaje de este relato vive toda una odisea al llegar a la estación.
 ---
 
