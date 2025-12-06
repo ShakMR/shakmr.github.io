@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Free Form on A poc a poc i amb bona lletra</title>
+    <link>https://shakmr.github.io/blog/tags/free-form/</link>
+    <description>Recent content in Free Form on A poc a poc i amb bona lletra</description>
+    <generator>Hugo</generator>
+    <language>es-es</language>
+    <lastBuildDate>Wed, 03 Dec 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://shakmr.github.io/blog/tags/free-form/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Ruby: The Coffee Machine</title>
+      <link>https://shakmr.github.io/blog/posts/escribir-y-crear/ruby-the-coffee-machine/</link>
+      <pubDate>Wed, 03 Dec 2025 00:00:00 +0000</pubDate>
+      <guid>https://shakmr.github.io/blog/posts/escribir-y-crear/ruby-the-coffee-machine/</guid>
+      <description>&lt;p&gt;—Bueno, pues ya está actualizada —dijo el comercial de café—. Ahora tenéis Ruby 3.0, con las últimas tendencias en inteligencia artificial generativa: clima, conversaciones de ascensor y, por supuesto, el mejor café del mercado.&lt;/p&gt;&#xA;&lt;p&gt;&#x9;Ese mismo día, Jesús fue el primero en probarla. Los días siguientes también. El tiempo que pasaba tomando café había ido en aumento desde la nueva actualización. Había aprendido muchos datos curiosos de la nueva Ruby: cuál es el café más caro del mundo, la ciudad más alta, la más baja&amp;hellip; Pasaba más tiempo en la cafetera que en su cubículo.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
